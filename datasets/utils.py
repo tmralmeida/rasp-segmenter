@@ -28,7 +28,7 @@ def category_label(labels, dims, n_labels):
         for j in range(dims[1]):
             f=int(labels[i,j])
             x[i, j, f] = 1
-    x = x.reshape(dims[0] * dims[1], n_labels)
+    #x = x.reshape(dims[0] * dims[1], n_labels)
     return x
 
 
@@ -65,7 +65,7 @@ def create_sets():
     
     assert len(rgbs) == len(depths) == len(labels), "Sth wrong with the data"
     assert Decimal(TRAIN_PT) + Decimal(VAL_PT) + Decimal(TEST_PT) == 1.0, "% of each set must sum up to 1" 
-
+    testing_set = TEST_PT > 0.0
     print("All files visited!")
     liste = np.arange(1,len(rgbs))
     np.random.seed(42)
@@ -80,8 +80,9 @@ def create_sets():
     test_info = [DataPoint(rgbs[idx], depths[idx], labels[idx]) for idx in test_list] 
     
     info = {"train" : train_info, 
-            "val" : val_info, 
-            "test" : test_info}
+            "val" : val_info}
+    if testing_set:
+        info.update({"test" : test_info})
     return info
 
 
