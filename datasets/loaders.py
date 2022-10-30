@@ -29,7 +29,8 @@ class SyntDs(Dataset):
         rgb_img, dep_img = np.asarray(exr_to_jpg(rgb_path)), np.asarray(exr_to_jpg(depth_path))
         original_mask = cv2.imread(label_path,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
         array_mask = torch.from_numpy(category_label(original_mask[:, :, 0], INPUT_SHAPE, NUM_CLASSES))
-        
+        rgb_img = deepcopy(rgb_img).reshape(rgb_img.shape[-1], rgb_img.shape[0], rgb_img.shape[1])
+        array_mask = deepcopy(array_mask).reshape(array_mask.shape[-1], array_mask.shape[0])
         
         
         return torch.from_numpy(deepcopy(rgb_img)), array_mask
@@ -73,7 +74,7 @@ if __name__ == "__main__":
     with tqdm(train_dl, unit="batch") as tepoch:
         for batch in tepoch:
             rgb_img, lbl = batch
-            #print("input shape {} label shape:{}".format(rgb_img.shape, lbl.shape))
+            print("input shape {} label shape:{}".format(rgb_img.shape, lbl.shape))
     
     print("Testing val set")
     with tqdm(val_dl, unit="batch") as tepoch:
