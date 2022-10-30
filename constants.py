@@ -11,3 +11,4 @@ INPUT_SHAPE = (224, 224)
 
 # hyperparams
 BATCH_SIZE = 8
+INPUT_CHANNELS = 3

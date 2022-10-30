@@ -74,7 +74,7 @@ if __name__ == "__main__":
     with tqdm(train_dl, unit="batch") as tepoch:
         for batch in tepoch:
             rgb_img, lbl = batch
-            print("input shape {} label shape:{}".format(rgb_img.shape, lbl.shape))
+            #print("input shape {} label shape:{}".format(rgb_img.shape, lbl.shape))
     
     print("Testing val set")
     with tqdm(val_dl, unit="batch") as tepoch:
