@@ -1,11 +1,29 @@
+import torch
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 
 from ..constants import *
 from ..datasets.loaders import SyntDs
 from ..datasets.utils import create_sets
+from ..models.segnet import SegNet
+from ..losses.ohem_ce import OHEMCrossEntropyLoss
+from .light_hl import LitSegNet
 
 
+# define the LightningModule
+if MODEL_NAME == "segnet":
+    model = SegNet(in_channels = INPUT_CHANNELS, 
+                   out_channels = NUM_CLASSES)
+else:
+    raise NotImplementedError(MODEL_NAME)
+
+
+loss = OHEMCrossEntropyLoss()
+ligt_model = LitSegNet(model = model,
+                       loss = loss)
+
+
+# setup data
 if DATASET_NAME == "synthetic":
     dataset_info = create_sets()
     train_ds = SyntDs(data = dataset_info, 
@@ -30,4 +48,6 @@ if DATASET_NAME == "synthetic":
 else:
     raise NotImplementedError(DATASET_NAME)
 
-#train_ds = SyntDs(mode = "train")
+
+trainer = pl.Trainer(limit_train_batches=100, max_epochs=1, accelerator="gpu")
+trainer.fit(model = ligt_model, train_dataloaders = train_dl)

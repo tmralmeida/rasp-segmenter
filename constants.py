@@ -5,10 +5,14 @@ PROC_DATA_PATH = "rasp-segmenter/data" # where to save
 TRAIN_PT = 0.7 # train set %
 VAL_PT = 0.2 # val set %
 TEST_PT = 0.1 # test set %
-NUM_CLASSES = 5
+
+# model
+MODEL_NAME = "segnet"
 INPUT_SHAPE = (224, 224)
+NUM_CLASSES = 5
 
 
 # hyperparams
 BATCH_SIZE = 8
 INPUT_CHANNELS = 3
+LR = 1e-3
