@@ -1,6 +1,9 @@
 import pytorch_lightning as pl
 from torch.optim import Adam
+from ..datasets.utils import colorize
 from ..constants import * 
+import random
+
 
 class LitSegNet(pl.LightningModule):
     def __init__(self, model, loss) -> None:
@@ -11,7 +14,7 @@ class LitSegNet(pl.LightningModule):
     def training_step(self, batch):
         x, y = batch
         y_hat = self.model(x.float().to(self.device))
-        loss = self.loss(y_hat, y)
+        loss = self.loss(y_hat.to(self.device), y.to(self.device))
         self.log("train_loss", loss)
         return loss
     
@@ -19,6 +22,20 @@ class LitSegNet(pl.LightningModule):
     def configure_optimizers(self):
         optimizer =  Adam(self.parameters(), lr = LR)
         return optimizer
+    
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x.float().to(self.device))
+        loss = self.loss(y_hat.to(self.device), y.to(self.device))
+        seg_img = colorize(y_hat[random.randint(0, x.size(0) - 2), ...].squeeze())
+        self.logger.experiment.add_image("segmented_images", seg_img, self.current_epoch)
+        self.log("val_loss", loss)
+        
+    def test_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x.float().to(self.device))
+        loss = self.loss(y_hat.to(self.device), y.to(self.device))
+        self.log("test_loss", loss)
     
     
         

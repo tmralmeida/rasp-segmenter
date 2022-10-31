@@ -129,5 +129,4 @@ dmypy.json
 .pyre/
 notebooks/
 data/
-outputs/
-runs/
+lightning_logs/

@@ -7,12 +7,42 @@ from ..constants import *
 from decimal import *
 from typing import List, Tuple
 import itertools
+from itertools import product
 from collections import namedtuple
 import imageio.v2 as imageio
+import torch
 from PIL import Image
 
 
 DataPoint = namedtuple("DataPoint", ["rgb", "depth", "label"])
+
+
+def colorize(img):
+    z, w, h  = img.shape
+    l=torch.zeros((3, w,h))
+    for i, j in product(range(w),range(h)):
+            if img[0, i,j]==1:
+                l[0,i,j]=0
+                l[1,i,j]=0
+                l[2,i,j]=0
+            elif img[1, i,j]==1:
+                l[0,i,j]=255
+                l[1,i,j]=0
+                l[2,i,j]=0
+            elif img[2, i,j]==1:
+                l[0,i,j]=0
+                l[1,i,j]=255
+                l[2,i,j]=0
+            elif img[3, i,j]==1:
+                l[0,i,j]=0
+                l[1,i,j]=0
+                l[2,i,j]=255
+            elif img[4, i,j]==1:
+                l[0,i,j]=238
+                l[1,i,j]=197
+                l[2,i,j]=145
+    return l
+
 
 
 def exr_to_jpg(path):
@@ -24,8 +54,7 @@ def exr_to_jpg(path):
 
 def category_label(labels, dims, n_labels):
     x = np.zeros([dims[0], dims[1], n_labels])
-    for i in range(dims[0]):
-        for j in range(dims[1]):
+    for i, j in product(range(dims[0]),range(dims[1])):
             f=int(labels[i,j])
             x[i, j, f] = 1
     #x = x.reshape(dims[0] * dims[1], n_labels)

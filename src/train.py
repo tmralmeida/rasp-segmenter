@@ -1,4 +1,4 @@
-import torch
+import os
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 
@@ -24,6 +24,7 @@ ligt_model = LitSegNet(model = model,
 
 
 # setup data
+NUM_WORKERS, testing = int(os.cpu_count() / 2), False
 if DATASET_NAME == "synthetic":
     dataset_info = create_sets()
     train_ds = SyntDs(data = dataset_info, 
@@ -31,23 +32,26 @@ if DATASET_NAME == "synthetic":
     train_dl = DataLoader(dataset = train_ds,
                           batch_size = BATCH_SIZE,
                           shuffle = True,
-                          num_workers = 4)
+                          num_workers = NUM_WORKERS)
     val_ds = SyntDs(data = dataset_info, 
                     mode = "val")
     val_dl = DataLoader(dataset = val_ds,
                         batch_size = BATCH_SIZE,
                         shuffle = False,
-                        num_workers = 4)
+                        num_workers = NUM_WORKERS)
     if "test" in dataset_info.keys():
+        testing = True
         test_ds = SyntDs(data = dataset_info, 
                         mode = "test")
         test_dl = DataLoader(dataset = test_ds,
                             batch_size = BATCH_SIZE,
                             shuffle = False,
-                            num_workers = 4)
+                            num_workers = NUM_WORKERS)
 else:
     raise NotImplementedError(DATASET_NAME)
 
 
-trainer = pl.Trainer(limit_train_batches=100, max_epochs=1, accelerator="gpu")
-trainer.fit(model = ligt_model, train_dataloaders = train_dl)
+trainer = pl.Trainer(max_epochs = NUM_EPOCHS, accelerator = "gpu", check_val_every_n_epoch = VAL_EVERY, default_root_dir = CHECK_SAVE_PATH)
+trainer.fit(model = ligt_model, train_dataloaders = train_dl, val_dataloaders = val_dl)
+if testing:
+    trainer.test(test_dl)
