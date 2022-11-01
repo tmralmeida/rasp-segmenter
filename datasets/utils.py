@@ -10,42 +10,38 @@ import itertools
 from itertools import product
 from collections import namedtuple
 import imageio.v2 as imageio
-import torch
+import numpy as np
 from PIL import Image
-
+from math import log
 
 DataPoint = namedtuple("DataPoint", ["rgb", "depth", "label"])
 
 
 def colorize(img):
     z, w, h  = img.shape
-    l=torch.zeros((3, w,h))
+    l=np.zeros((3,w,h))
     for i, j in product(range(w),range(h)):
-        if img[0, i,j]==1:
-            print("class 0")
+        if img[0, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=0
             l[1,i,j]=0
             l[2,i,j]=0
-        elif img[1, i,j]==1:
-            print("class 1")
+        elif img[1, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=255
             l[1,i,j]=0
             l[2,i,j]=0
-        elif img[2, i,j]==1:
-            print("class 2")
+        elif img[2, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=0
             l[1,i,j]=255
             l[2,i,j]=0
-        elif img[3, i,j]==1:
-            print("class 3")
+        elif img[3, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=0
             l[1,i,j]=0
             l[2,i,j]=255
-        elif img[4, i,j]==1:
-            print("class 4")
+        elif img[4, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=238
             l[1,i,j]=197
             l[2,i,j]=145
+    l = l.astype(np.uint8)
     return l
 
 

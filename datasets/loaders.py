@@ -29,12 +29,12 @@ class SyntDs(Dataset):
     
     @staticmethod
     def my_segmentation_transforms(image : torch.Tensor, segmentation : torch.Tensor, mode : str) -> Tuple[torch.Tensor]:
-        image = TF.resize(image, INPUT_SHAPE)
-        segmentation = TF.resize(segmentation, INPUT_SHAPE, interpolation = InterpolationMode.NEAREST)
-        if random.random() > 0.5 and mode == "train":
-            angle = random.randint(-30, 30)
-            image = TF.rotate(image, angle)
-            segmentation = TF.rotate(segmentation, angle)
+        # image = TF.resize(image, INPUT_SHAPE)
+        # segmentation = TF.resize(segmentation, INPUT_SHAPE, interpolation = InterpolationMode.NEAREST)
+        # if random.random() > 0.5 and mode == "train":
+        #     angle = random.randint(-30, 30)
+        #     image = TF.rotate(image, angle)
+        #     segmentation = TF.rotate(segmentation, angle)
         # more transforms ...
         return image, segmentation
     
@@ -42,7 +42,7 @@ class SyntDs(Dataset):
     def __getitem__(self, index : int) -> Tuple[torch.Tensor]:
         spl = self.data[index]
         rgb_path, depth_path, label_path = spl.rgb, spl.depth, spl.label
-        rgb_img, _ = np.asarray(exr_to_jpg(rgb_path)), np.asarray(exr_to_jpg(depth_path))
+        rgb_img, _ = np.asarray(exr_to_jpg(rgb_path)) / 255, np.asarray(exr_to_jpg(depth_path))
         original_mask = cv2.imread(label_path,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
         array_mask = torch.from_numpy(category_label(original_mask[:, :, 0], INPUT_SHAPE, NUM_CLASSES))
         rgb_img = deepcopy(rgb_img).reshape(rgb_img.shape[-1], rgb_img.shape[0], rgb_img.shape[1])
