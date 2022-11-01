@@ -3,7 +3,7 @@ from random import seed
 import ray
 import numpy as np
 import os 
-from ..constants import *
+from ..constants.config import *
 from decimal import *
 from typing import List, Tuple
 import itertools

@@ -1,7 +1,7 @@
 import pytorch_lightning as pl
 from torch.optim import Adam
 from ..datasets.utils import colorize
-from ..constants import * 
+from ..constants.config import * 
 import random
 import torchvision
 import numpy as np

@@ -54,7 +54,7 @@ class SegNet(nn.Module):
     
     
 if __name__ == "__main__":
-    from ..constants import *
+    from ..constants.config import *
     import torch
     
     segmenter = SegNet(INPUT_CHANNELS, NUM_CLASSES)

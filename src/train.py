@@ -2,7 +2,7 @@ import os
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 
-from ..constants import *
+from ..constants.config import *
 from ..datasets.loaders import SyntDs
 from ..datasets.utils import create_sets
 from ..models.segnet import SegNet
