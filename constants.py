@@ -9,13 +9,13 @@ TEST_PT = 0.1 # test set %
 
 # model
 MODEL_NAME = "segnet"
-INPUT_SHAPE = (224, 224)
+INPUT_SHAPE = (112, 112)
 NUM_CLASSES = 5
 
 
 # hyperparams
 NUM_EPOCHS = 10
 VAL_EVERY = 2
-BATCH_SIZE = 8
+BATCH_SIZE = 32
 INPUT_CHANNELS = 3
 LR = 1e-3

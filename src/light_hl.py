@@ -18,7 +18,6 @@ class LitSegNet(pl.LightningModule):
         self.log("train_loss", loss)
         return loss
     
-    
     def configure_optimizers(self):
         optimizer =  Adam(self.parameters(), lr = LR)
         return optimizer
@@ -27,7 +26,8 @@ class LitSegNet(pl.LightningModule):
         x, y = batch
         y_hat = self.model(x.float().to(self.device))
         loss = self.loss(y_hat.to(self.device), y.to(self.device))
-        seg_img = colorize(y_hat[random.randint(0, x.size(0) - 2), ...].squeeze())
+        img2_log = y_hat.clone()[random.randint(0, x.size(0) - 2), ...].squeeze()
+        seg_img = colorize(img2_log)
         self.logger.experiment.add_image("segmented_images", seg_img, self.current_epoch)
         self.log("val_loss", loss)
         

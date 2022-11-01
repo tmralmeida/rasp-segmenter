@@ -2,6 +2,7 @@ from collections import OrderedDict
 from torch import nn
 from torch.nn import functional as F
 from .modules import ConvBnReLU2d
+from collections import deque
 
 
 def segnet(in_channels, out_channels):
@@ -9,7 +10,6 @@ def segnet(in_channels, out_channels):
 
 
 class SegNet(nn.Module):
-
     def __init__(self, in_channels, out_channels):
         super(SegNet, self).__init__()
 
@@ -37,14 +37,18 @@ class SegNet(nn.Module):
 
     def forward(self, input):
         pooling_indices = []
-        x = input
-        for layer in self.encoder.children():
+        x, mp_sizes = input, deque()
+        for i, layer in enumerate(self.encoder.children()):
             x = layer(x)
+            if i == 0:
+                mp_sizes.append(x.size())
             x, indices = F.max_pool2d_with_indices(x, kernel_size=2)
+            mp_sizes.appendleft(x.shape)
             pooling_indices = [indices, *pooling_indices]
-        for layer in self.decoder.children():
+        mp_sizes.popleft()
+        for i, layer in enumerate(self.decoder.children()):
             indices, *pooling_indices = pooling_indices
-            x = F.max_unpool2d(x, indices, kernel_size=2)
+            x = F.max_unpool2d(x, indices, kernel_size=2, output_size=mp_sizes[i])
             x = layer(x)
         return x
     
@@ -54,8 +58,7 @@ if __name__ == "__main__":
     import torch
     
     segmenter = SegNet(INPUT_CHANNELS, NUM_CLASSES)
-    
-    inpt_dum = torch.rand(BATCH_SIZE, INPUT_CHANNELS, 224, 224)
+    inpt_dum = torch.rand(BATCH_SIZE, INPUT_CHANNELS, *INPUT_SHAPE)
     out = segmenter(inpt_dum)
-    assert out.shape == (BATCH_SIZE, NUM_CLASSES, 224, 224)
+    assert out.shape == (BATCH_SIZE, NUM_CLASSES, *INPUT_SHAPE)
     print("Model passed!")

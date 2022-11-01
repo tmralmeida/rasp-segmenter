@@ -7,6 +7,9 @@ from ..constants import *
 import torch
 import numpy as np
 from copy import deepcopy
+from torchvision.transforms import InterpolationMode
+import torchvision.transforms.functional as TF
+import random
 
 
 os.environ["OPENCV_IO_ENABLE_OPENEXR"]="1"
@@ -17,26 +20,40 @@ class SyntDs(Dataset):
     Args:
         Dataset (_type_): _description_
     """
-    def __init__(self, data : List[Tuple], mode : str, transforms = None) -> None:
+    def __init__(self, data : List[Tuple], mode : str, transforms = False) -> None:
         super().__init__()
         self.data = data[mode]
+        self.mode = mode
         self.transforms = transforms
         
-        
-    def __getitem__(self, index):
+    
+    @staticmethod
+    def my_segmentation_transforms(image : torch.Tensor, segmentation : torch.Tensor, mode : str) -> Tuple[torch.Tensor]:
+        image = TF.resize(image, INPUT_SHAPE)
+        segmentation = TF.resize(segmentation, INPUT_SHAPE, interpolation = InterpolationMode.NEAREST)
+        if random.random() > 0.5 and mode == "train":
+            angle = random.randint(-30, 30)
+            image = TF.rotate(image, angle)
+            segmentation = TF.rotate(segmentation, angle)
+        # more transforms ...
+        return image, segmentation
+    
+    
+    def __getitem__(self, index : int) -> Tuple[torch.Tensor]:
         spl = self.data[index]
         rgb_path, depth_path, label_path = spl.rgb, spl.depth, spl.label
-        rgb_img, dep_img = np.asarray(exr_to_jpg(rgb_path)), np.asarray(exr_to_jpg(depth_path))
+        rgb_img, _ = np.asarray(exr_to_jpg(rgb_path)), np.asarray(exr_to_jpg(depth_path))
         original_mask = cv2.imread(label_path,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
         array_mask = torch.from_numpy(category_label(original_mask[:, :, 0], INPUT_SHAPE, NUM_CLASSES))
         rgb_img = deepcopy(rgb_img).reshape(rgb_img.shape[-1], rgb_img.shape[0], rgb_img.shape[1])
-        array_mask = deepcopy(array_mask).reshape(array_mask.shape[-1], array_mask.shape[0], array_mask.shape[1])
-        
-        
-        return torch.from_numpy(deepcopy(rgb_img)), array_mask
+        y_input = deepcopy(array_mask).reshape(array_mask.shape[-1], array_mask.shape[0], array_mask.shape[1])
+        x_input = torch.from_numpy(deepcopy(rgb_img))
+        if self.transforms or self.mode in ["val", "test"]: # val, test -> resize
+            x_input, y_input = self.my_segmentation_transforms(x_input, y_input, mode = self.mode)
+        return x_input, y_input
 
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.data)
 
 

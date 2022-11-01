@@ -28,7 +28,8 @@ NUM_WORKERS, testing = int(os.cpu_count() / 2), False
 if DATASET_NAME == "synthetic":
     dataset_info = create_sets()
     train_ds = SyntDs(data = dataset_info, 
-                      mode = "train")
+                      mode = "train", 
+                      transforms = True)
     train_dl = DataLoader(dataset = train_ds,
                           batch_size = BATCH_SIZE,
                           shuffle = True,

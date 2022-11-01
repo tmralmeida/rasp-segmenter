@@ -21,26 +21,31 @@ def colorize(img):
     z, w, h  = img.shape
     l=torch.zeros((3, w,h))
     for i, j in product(range(w),range(h)):
-            if img[0, i,j]==1:
-                l[0,i,j]=0
-                l[1,i,j]=0
-                l[2,i,j]=0
-            elif img[1, i,j]==1:
-                l[0,i,j]=255
-                l[1,i,j]=0
-                l[2,i,j]=0
-            elif img[2, i,j]==1:
-                l[0,i,j]=0
-                l[1,i,j]=255
-                l[2,i,j]=0
-            elif img[3, i,j]==1:
-                l[0,i,j]=0
-                l[1,i,j]=0
-                l[2,i,j]=255
-            elif img[4, i,j]==1:
-                l[0,i,j]=238
-                l[1,i,j]=197
-                l[2,i,j]=145
+        if img[0, i,j]==1:
+            print("class 0")
+            l[0,i,j]=0
+            l[1,i,j]=0
+            l[2,i,j]=0
+        elif img[1, i,j]==1:
+            print("class 1")
+            l[0,i,j]=255
+            l[1,i,j]=0
+            l[2,i,j]=0
+        elif img[2, i,j]==1:
+            print("class 2")
+            l[0,i,j]=0
+            l[1,i,j]=255
+            l[2,i,j]=0
+        elif img[3, i,j]==1:
+            print("class 3")
+            l[0,i,j]=0
+            l[1,i,j]=0
+            l[2,i,j]=255
+        elif img[4, i,j]==1:
+            print("class 4")
+            l[0,i,j]=238
+            l[1,i,j]=197
+            l[2,i,j]=145
     return l
 
 
