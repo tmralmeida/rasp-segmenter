@@ -29,12 +29,12 @@ class SyntDs(Dataset):
     
     @staticmethod
     def my_segmentation_transforms(image : torch.Tensor, segmentation : torch.Tensor, mode : str) -> Tuple[torch.Tensor]:
-        # image = TF.resize(image, INPUT_SHAPE)
-        # segmentation = TF.resize(segmentation, INPUT_SHAPE, interpolation = InterpolationMode.NEAREST)
-        # if random.random() > 0.5 and mode == "train":
-        #     angle = random.randint(-30, 30)
-        #     image = TF.rotate(image, angle)
-        #     segmentation = TF.rotate(segmentation, angle)
+        image = TF.resize(image, INPUT_SHAPE)
+        segmentation = TF.resize(segmentation, INPUT_SHAPE, interpolation = InterpolationMode.NEAREST)
+        if random.random() > 0.5 and mode == "train":
+            angle = random.randint(-30, 30)
+            image = TF.rotate(image, angle)
+            segmentation = TF.rotate(segmentation, angle)
         # more transforms ...
         return image, segmentation
     
