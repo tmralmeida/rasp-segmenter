@@ -55,4 +55,4 @@ else:
 trainer = pl.Trainer(max_epochs = NUM_EPOCHS, accelerator = "gpu", check_val_every_n_epoch = VAL_EVERY, default_root_dir = CHECK_SAVE_PATH)
 trainer.fit(model = ligt_model, train_dataloaders = train_dl, val_dataloaders = val_dl)
 if testing:
-    trainer.test(test_dl)
+    trainer.test(ckpt_path = "best", dataloaders = test_dl)
