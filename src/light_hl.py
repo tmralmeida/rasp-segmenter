@@ -30,8 +30,8 @@ class LitSegNet(pl.LightningModule):
         y_hat = self.model(x.float().to(self.device))
         loss = self.loss(y_hat.to(self.device), y.to(self.device))
         idx_log = random.randint(0, x.size(0) - 2)
-        src2log = x[idx_log].clone().squeeze().detach().cpu().numpy() * 255
-        seg2log = y_hat[idx_log].clone().squeeze().softmax(dim = 0).detach().cpu().numpy()
+        src2log = x[idx_log].clone().squeeze().cpu().numpy() * 255
+        seg2log = y_hat[idx_log].clone().squeeze().softmax(dim = 0).cpu().numpy()
         seg_img = colorize(seg2log)
         stacked_imgs = np.stack([src2log.astype(np.uint8), seg_img], axis = 0)
         stacked_imgs = torchvision.utils.make_grid(torch.from_numpy(stacked_imgs))
