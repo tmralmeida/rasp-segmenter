@@ -21,23 +21,24 @@ def colorize(img):
     z, w, h  = img.shape
     l=np.zeros((3,w,h))
     for i, j in product(range(w),range(h)):
-        if img[0, i,j] > THRESHOLD_LABELS:
+        _max = img[:, i,j].max()
+        if img[0, i,j] == _max and img[0, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=0
             l[1,i,j]=0
             l[2,i,j]=0
-        elif img[1, i,j] > THRESHOLD_LABELS:
+        elif img[1, i,j] == _max and img[1, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=255
             l[1,i,j]=0
             l[2,i,j]=0
-        elif img[2, i,j] > THRESHOLD_LABELS:
+        elif img[2, i,j] == _max and img[2, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=0
             l[1,i,j]=255
             l[2,i,j]=0
-        elif img[3, i,j] > THRESHOLD_LABELS:
+        elif img[3, i,j] == _max and img[3, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=0
             l[1,i,j]=0
             l[2,i,j]=255
-        elif img[4, i,j] > THRESHOLD_LABELS:
+        elif img[4, i,j] == _max and img[4, i,j] > THRESHOLD_LABELS:
             l[0,i,j]=238
             l[1,i,j]=197
             l[2,i,j]=145
