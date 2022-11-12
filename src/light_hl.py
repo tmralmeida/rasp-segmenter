@@ -13,7 +13,7 @@ class LitSegNet(pl.LightningModule):
         super().__init__()
         self.model =  model
         self.loss = loss
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['loss'])
         self.vals_out = None
         
     def training_step(self, batch):
