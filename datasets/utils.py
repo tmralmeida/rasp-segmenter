@@ -3,7 +3,7 @@ from random import seed
 import ray
 import numpy as np
 import os 
-from ..constants.config import *
+from constants.config import *
 from decimal import *
 from typing import List, Tuple
 import itertools
@@ -42,7 +42,6 @@ def colorize(img):
             l[0,i,j]=238
             l[1,i,j]=197
             l[2,i,j]=145
-    l = l.astype(np.uint8)
     return l
 
 

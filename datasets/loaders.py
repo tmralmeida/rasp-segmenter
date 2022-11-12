@@ -2,8 +2,8 @@ import os
 import cv2
 from torch.utils.data import Dataset
 from typing import List, Tuple
-from .utils import exr_to_jpg, category_label
-from ..constants.config import *
+from datasets.utils import exr_to_jpg, category_label
+from constants.config import *
 import torch
 import numpy as np
 from copy import deepcopy

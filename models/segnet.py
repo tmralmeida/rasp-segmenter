@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from torch import nn
 from torch.nn import functional as F
-from .modules import ConvBnReLU2d
+from models.modules import ConvBnReLU2d
 from collections import deque
 
 

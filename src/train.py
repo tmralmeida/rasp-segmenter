@@ -2,12 +2,12 @@ import os
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 
-from ..constants.config import *
-from ..datasets.loaders import SyntDs
-from ..datasets.utils import create_sets
-from ..models.segnet import SegNet
-from ..losses.ohem_ce import OHEMCrossEntropyLoss
-from .light_hl import LitSegNet
+from constants.config import *
+from datasets.loaders import SyntDs
+from datasets.utils import create_sets
+from models.segnet import SegNet
+from losses.ohem_ce import OHEMCrossEntropyLoss
+from src.light_hl import LitSegNet
 
 
 # define the LightningModule
